@@ -1,8 +1,8 @@
 import React from 'react';
-
+import Header from '../components/Header';
 
 const Home = () => {
-    return (<h1>Home Page</h1>)
+    return ( <div className="min-h-screen bg-gray-50"><Header/></div>)
 }
 
 export default Home;
