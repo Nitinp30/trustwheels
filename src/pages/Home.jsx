@@ -4,12 +4,14 @@ import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import { isValidZip } from '../utils/validation';
 import VehicleCard from '../components/VehicleCard';
+import SortOptions from '../components/SortOptions';
 
 
 const Home = () => {
     const [searchZip, setSearchZip] = useState('');
     const [error, setError] = useState('');
     const [currentZip, setCurrentZip] = useState('');
+    const [sortBy, setSortBy] = useState('Popularity');
 
     const filteredVehicles = useMemo(() => {
         let vehicles = MOCK_VEHICLES;
@@ -18,9 +20,23 @@ const Home = () => {
             vehicles = vehicles.filter(v => v.zipCode === currentZip);
         }
 
+        if (sortBy && sortBy !== 'Popularity') {
+            vehicles = [...vehicles].sort((a, b) => {
+                switch (sortBy) {
+                    case 'Price: Low to High': return a.price - b.price;
+                    case 'Price: High to Low': return b.price - a.price;
+                    case 'Year: Newest First': return b.year - a.year;
+                    case 'Year: Oldest First': return a.year - b.year;
+                    case 'Mileage: Low to High': return a.mileage - b.mileage;
+                    case 'Mileage: High to Low': return b.mileage - a.mileage;
+                    default: return 0;
+                }
+            });
+        }
+
         return vehicles;
 
-    }, [currentZip]);
+    }, [currentZip, sortBy]);
 
 
     const handleSearch = (e) => {
@@ -53,6 +69,7 @@ const Home = () => {
                                     </h2>
                                     <p className="text-gray-600">in {currentZip}</p>
                                 </div>
+                                <SortOptions sortBy={sortBy} setSortBy={setSortBy} />
                             </div>
                             {filteredVehicles.length === 0 ? (
                                 <div className="text-center py-16">
