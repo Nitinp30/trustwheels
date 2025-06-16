@@ -1,8 +1,9 @@
-import React, {useState, useMemo} from 'react';
+import React, { useState, useMemo } from 'react';
 import MOCK_VEHICLES from '../data/vehicles'
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import { isValidZip } from '../utils/validation';
+import VehicleCard from '../components/VehicleCard';
 
 
 const Home = () => {
@@ -53,6 +54,18 @@ const Home = () => {
                                     <p className="text-gray-600">in {currentZip}</p>
                                 </div>
                             </div>
+                            {filteredVehicles.length === 0 ? (
+                                <div className="text-center py-16">
+                                    <div className="text-gray-500 text-lg mb-2">No vehicles found</div>
+                                    <div className="text-gray-400">Try adjusting your filters or searching a different ZIP code</div>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {filteredVehicles.map(vehicle => (
+                                        <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                                    ))}
+                                </div>
+                            )}
                         </main>
                     </div>
                 </div>
