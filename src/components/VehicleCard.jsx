@@ -1,6 +1,6 @@
-import React from 'react';
-import { Heart } from 'lucide-react';
-import { formatPrice, formatMileage } from '../utils/format';
+import React from "react";
+import { Heart } from "lucide-react";
+import { formatPrice, formatMileage } from "../utils/format";
 
 const VehicleCard = ({ vehicle }) => (
   <div className="bg-white rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 overflow-hidden group">
@@ -11,9 +11,21 @@ const VehicleCard = ({ vehicle }) => (
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
       <div className="absolute top-3 left-3 flex flex-col gap-2">
-        {vehicle.recentlyAdded && <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Recently added</span>}
-        {vehicle.brandNew && <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Brand new</span>}
-        {vehicle.noShippingFee && <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">No shipping fee</span>}
+        {vehicle.recentlyAdded && (
+          <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+            Recently added
+          </span>
+        )}
+        {vehicle.brandNew && (
+          <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+            Brand new
+          </span>
+        )}
+        {vehicle.noShippingFee && (
+          <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+            No shipping fee
+          </span>
+        )}
       </div>
       <button className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
         <Heart className="w-4 h-4 text-gray-600" />

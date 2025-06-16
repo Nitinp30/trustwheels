@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Header = () => (
   <header className="bg-white shadow-sm border-b">
@@ -9,8 +9,12 @@ const Header = () => (
             TRUSTWHEELS
           </h1>
           <nav className="hidden md:flex space-x-8">
-            <a href="#" className="text-gray-600 hover:text-gray-900">How it works</a>
-            <a href="#" className="text-gray-600 hover:text-gray-900">Locations</a>
+            <a href="#" className="text-gray-600 hover:text-gray-900">
+              How it works
+            </a>
+            <a href="#" className="text-gray-600 hover:text-gray-900">
+              Locations
+            </a>
           </nav>
         </div>
         <div className="flex items-center space-x-4">

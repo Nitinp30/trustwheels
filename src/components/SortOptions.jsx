@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const SortOptions = ({ sortBy, setSortBy }) => (
   <div className="flex items-center gap-4">

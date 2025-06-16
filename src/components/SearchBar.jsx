@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapPin, Search } from 'lucide-react';
+import React from "react";
+import { MapPin, Search } from "lucide-react";
 
 const SearchBar = ({ searchZip, setSearchZip, handleSearch, error }) => (
   <div className="max-w-md mx-auto">
@@ -11,7 +11,7 @@ const SearchBar = ({ searchZip, setSearchZip, handleSearch, error }) => (
         onChange={(e) => setSearchZip(e.target.value)}
         placeholder="Enter ZIP code"
         className="w-full pl-12 pr-4 py-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
-        onKeyDown={(e) => e.key === 'Enter' && handleSearch(e)}
+        onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
       />
       <button
         onClick={handleSearch}
