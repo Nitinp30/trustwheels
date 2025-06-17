@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Heart } from "lucide-react";
 import { formatPrice, formatMileage } from "../utils/format";
 
@@ -6,33 +6,48 @@ const VehicleCard = ({ vehicle }) => {
   const [imageError, setImageError] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleImageError = (e) => {
-    console.log("Image failed to load:", e.target.src);
+  const handleImageError = useCallback((e) => {
     setImageError(true);
-    e.target.src = `https://via.placeholder.com/500x300/e5e7eb/6b7280?text=${encodeURIComponent(
-      vehicle.make + " " + vehicle.model
-    )}`;
-  };
+  }, []);
 
-  const handleImageLoad = () => {
+  const handleImageLoad = useCallback(() => {
     setImageError(false);
-  };
+  }, []);
 
-  const handleHeartClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsLiked(!isLiked);
+  const handleHeartClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsLiked(!isLiked);
+    },
+    [isLiked]
+  );
+
+  const getDataUrlPlaceholder = () => {
+    const svg = `
+      <svg width="500" height="300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="300" fill="#f3f4f6"/>
+        <text x="50%" y="45%" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="16">
+          ${vehicle.make} ${vehicle.model}
+        </text>
+        <text x="50%" y="60%" text-anchor="middle" fill="#9ca3af" font-family="Arial, sans-serif" font-size="12">
+          Image not available
+        </text>
+      </svg>
+    `;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
   };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 overflow-hidden group">
       <div className="relative aspect-video bg-gray-200 overflow-hidden">
         <img
-          src={vehicle.image}
+          src={vehicle.image || getDataUrlPlaceholder()}
           alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={handleImageError}
           onLoad={handleImageLoad}
+          loading="lazy"
         />
         {imageError && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -61,20 +76,20 @@ const VehicleCard = ({ vehicle }) => {
             </span>
           )}
         </div>
-        <button 
+        <button
           onClick={handleHeartClick}
           className={`absolute top-3 right-3 p-2 backdrop-blur-sm rounded-full transition-all duration-200 transform ${
-            isLiked 
-              ? 'bg-red-50 hover:bg-red-100 scale-110' 
-              : 'bg-white/80 hover:bg-white hover:scale-105'
+            isLiked
+              ? "bg-red-50 hover:bg-red-100 scale-110"
+              : "bg-white/80 hover:bg-white hover:scale-105"
           }`}
         >
-          <Heart 
+          <Heart
             className={`w-4 h-4 transition-all duration-200 ${
-              isLiked 
-                ? 'text-red-500 fill-red-500' 
-                : 'text-gray-600 hover:text-red-400'
-            }`} 
+              isLiked
+                ? "text-red-500 fill-red-500"
+                : "text-gray-600 hover:text-red-400"
+            }`}
           />
         </button>
       </div>
