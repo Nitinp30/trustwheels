@@ -62,7 +62,7 @@ const Home = () => {
     setPriceRange([0, 2000]);
     setBrandNewFilter(false);
     setModelMileageRange([0, 80000]);
-    setModelYearRange([2020, 2022]);
+    setModelYearRange([2020, 2025]);
   };
 
   const activeFiltersCount = [
@@ -73,6 +73,8 @@ const Home = () => {
     brandNewFilter,
     noShippingFeeFilter,
     priceRange[0] > 0 || priceRange[1] < 2000,
+    modelMileageRange[0] > 0 || modelMileageRange[1] < 80000,
+    modelYearRange[0] > 2020 || modelYearRange[1] < 2025,
   ].filter(Boolean).length;
 
   return (
