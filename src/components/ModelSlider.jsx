@@ -1,60 +1,122 @@
-import React, { useState } from "react";
-import ReactSlider from "react-slider";
+
+import React, { useState, useCallback, useRef, useEffect } from "react";
 
 const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [activeThumb, setActiveThumb] = useState(null);
+  const sliderRef = useRef(null);
+  const trackRef = useRef(null);
 
-  const handleChange = ([min, max]) => {
-    const clampedMin = Math.max(MIN, Math.min(min, MAX - 1));
-    const clampedMax = Math.min(MAX, Math.max(max, MIN + 1));
-
-    if (clampedMin >= clampedMax) {
-      return;
+  const handleChange = useCallback(([min, max]) => {
+    const clampedMin = Math.max(MIN, Math.min(min, MAX));
+    const clampedMax = Math.min(MAX, Math.max(max, MIN));
+    
+    if (clampedMax - clampedMin < 1) {
+      return; 
     }
-
+    
     setModelRange([clampedMin, clampedMax]);
-  };
+  }, [MIN, MAX, setModelRange]);
 
-  const getTrackStyle = (index) => {
-    if (index === 1) {
-      return {
-        backgroundColor: "#1f2937",
-        borderRadius: "4px",
-        height: "8px",
-        top: "50%",
-        transform: "translateY(-50%)",
-      };
-    }
-    // Inactive tracks
-    return {
-      backgroundColor: "#e5e7eb",
-      borderRadius: "4px",
-      height: "8px",
-      top: "50%",
-      transform: "translateY(-50%)",
+  const getPercentage = useCallback((value) => {
+    return ((value - MIN) / (MAX - MIN)) * 100;
+  }, [MIN, MAX]);
+
+  const getValue = useCallback((percentage) => {
+    return Math.round(MIN + (percentage / 100) * (MAX - MIN));
+  }, [MIN, MAX]);
+
+  const handleMouseDown = useCallback((thumbIndex, e) => {
+    e.preventDefault();
+    setIsDragging(true);
+    setActiveThumb(thumbIndex);
+
+    const handleMouseMove = (e) => {
+      if (!trackRef.current) return;
+
+      const rect = trackRef.current.getBoundingClientRect();
+      const percentage = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+      const newValue = getValue(percentage);
+
+      const newRange = [...modelRange];
+      newRange[thumbIndex] = newValue;
+
+      if (thumbIndex === 0 && newValue < modelRange[1] - 1) {
+        handleChange([newValue, modelRange[1]]);
+      } else if (thumbIndex === 1 && newValue > modelRange[0] + 1) {
+        handleChange([modelRange[0], newValue]);
+      }
     };
-  };
 
-  const getThumbStyle = (index) => ({
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      setActiveThumb(null);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [modelRange, handleChange, getValue]);
+
+  const handleKeyDown = useCallback((thumbIndex, e) => {
+    let newValue = modelRange[thumbIndex];
+    
+    switch (e.key) {
+      case 'ArrowLeft':
+      case 'ArrowDown':
+        e.preventDefault();
+        newValue = Math.max(MIN, newValue - 1);
+        break;
+      case 'ArrowRight':
+      case 'ArrowUp':
+        e.preventDefault();
+        newValue = Math.min(MAX, newValue + 1);
+        break;
+      case 'Home':
+        e.preventDefault();
+        newValue = MIN;
+        break;
+      case 'End':
+        e.preventDefault();
+        newValue = MAX;
+        break;
+      default:
+        return;
+    }
+
+    const newRange = [...modelRange];
+    newRange[thumbIndex] = newValue;
+
+    if (thumbIndex === 0 && newValue < modelRange[1]) {
+      handleChange([newValue, modelRange[1]]);
+    } else if (thumbIndex === 1 && newValue > modelRange[0]) {
+      handleChange([modelRange[0], newValue]);
+    }
+  }, [modelRange, handleChange, MIN, MAX]);
+
+  const getThumbStyle = useCallback((thumbIndex) => ({
     height: "20px",
     width: "20px",
     backgroundColor: "#ffffff",
     border: "2px solid #1f2937",
     borderRadius: "50%",
     cursor: "pointer",
-    boxShadow: isDragging
+    boxShadow: isDragging && activeThumb === thumbIndex
       ? "0 4px 12px rgba(0,0,0,0.15)"
       : "0 2px 4px rgba(0,0,0,0.1)",
     outline: "none",
+    position: "absolute",
     top: "50%",
-    transform: "translateY(-50%)",
+    transform: "translate(-50%, -50%)",
     transition: "box-shadow 0.2s ease",
-    zIndex: 1,
-  });
+    zIndex: activeThumb === thumbIndex ? 3 : 2,
+    left: `${getPercentage(modelRange[thumbIndex])}%`,
+  }), [isDragging, activeThumb, getPercentage, modelRange]);
 
   return (
     <div className="mb-6">
-      <h4 className="text-sm font-semibold text-gray-900 mb-3"> {filter}</h4>
+      <h4 className="text-sm font-semibold text-gray-900 mb-3">{filter}</h4>
 
       {/* Top Pill Inputs */}
       <div className="flex justify-between items-center mb-6">
@@ -67,41 +129,40 @@ const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
         </div>
       </div>
 
-      {/* Slider Container */}
-      <div className="relative px-2">
-        <ReactSlider
-          className="relative w-full h-5 flex items-center"
-          thumbClassName="slider-thumb"
-          trackClassName="slider-track"
-          value={modelRange}
-          onChange={handleChange}
-          onBeforeChange={() => setIsDragging(true)}
-          onAfterChange={() => setIsDragging(false)}
-          min={MIN}
-          max={MAX}
-          step={1}
-          pearling
-          minDistance={1}
-          withTracks
-          renderThumb={(props, state) => (
-            <div
-              {...props}
-              style={{
-                ...props.style,
-                ...getThumbStyle(state.index),
-              }}
-            />
-          )}
-          renderTrack={(props, state) => (
-            <div
-              {...props}
-              style={{
-                ...props.style,
-                ...getTrackStyle(state.index),
-              }}
-            />
-          )}
-        />
+      {/* Custom Slider Container */}
+      <div className="relative px-2" ref={sliderRef}>
+        {/* Track */}
+        <div
+          ref={trackRef}
+          className="relative w-full h-2 bg-gray-200 rounded-lg cursor-pointer"
+          style={{ top: "50%", transform: "translateY(-50%)" }}
+        >
+          {/* Active Track */}
+          <div
+            className="absolute h-full bg-gray-800 rounded-lg"
+            style={{
+              left: `${getPercentage(modelRange[0])}%`,
+              width: `${getPercentage(modelRange[1]) - getPercentage(modelRange[0])}%`,
+            }}
+          />
+        </div>
+
+        {/* Thumbs */}
+        {[0, 1].map((thumbIndex) => (
+          <div
+            key={thumbIndex}
+            style={getThumbStyle(thumbIndex)}
+            onMouseDown={(e) => handleMouseDown(thumbIndex, e)}
+            onKeyDown={(e) => handleKeyDown(thumbIndex, e)}
+            tabIndex={0}
+            role="slider"
+            aria-label={`${filter} ${thumbIndex === 0 ? 'minimum' : 'maximum'} value`}
+            aria-valuemin={MIN}
+            aria-valuemax={MAX}
+            aria-valuenow={modelRange[thumbIndex]}
+            aria-orientation="horizontal"
+          />
+        ))}
       </div>
 
       {/* Bottom Labels */}
