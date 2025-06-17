@@ -1,7 +1,7 @@
 import React from "react";
 import { Eye } from "lucide-react";
 
-const ModalOverlay = () => (
+const ModalOverlay = ({ setIsModelOverlayVisible }) => (
   <div className="fixed bottom-6 right-6 z-50">
     <div className="relative">
       <div className="w-80 h-48 bg-gradient-to-br from-teal-500 to-green-600 rounded-xl overflow-hidden shadow-2xl">
@@ -17,7 +17,11 @@ const ModalOverlay = () => (
             Once you Flex, you'll never buy a Vehicle again.
           </p>
         </div>
-        <button className="absolute top-4 right-4 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+
+        <button
+          onClick={() => setIsModelOverlayVisible(false)}
+          className="absolute top-4 right-4 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center"
+        >
           <Eye className="w-4 h-4 text-white" />
         </button>
       </div>
