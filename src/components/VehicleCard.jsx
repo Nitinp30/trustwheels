@@ -4,6 +4,7 @@ import { formatPrice, formatMileage } from "../utils/format";
 
 const VehicleCard = ({ vehicle }) => {
   const [imageError, setImageError] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const handleImageError = (e) => {
     console.log("Image failed to load:", e.target.src);
@@ -15,6 +16,12 @@ const VehicleCard = ({ vehicle }) => {
 
   const handleImageLoad = () => {
     setImageError(false);
+  };
+
+  const handleHeartClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsLiked(!isLiked);
   };
 
   return (
@@ -54,8 +61,21 @@ const VehicleCard = ({ vehicle }) => {
             </span>
           )}
         </div>
-        <button className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-          <Heart className="w-4 h-4 text-gray-600" />
+        <button 
+          onClick={handleHeartClick}
+          className={`absolute top-3 right-3 p-2 backdrop-blur-sm rounded-full transition-all duration-200 transform ${
+            isLiked 
+              ? 'bg-red-50 hover:bg-red-100 scale-110' 
+              : 'bg-white/80 hover:bg-white hover:scale-105'
+          }`}
+        >
+          <Heart 
+            className={`w-4 h-4 transition-all duration-200 ${
+              isLiked 
+                ? 'text-red-500 fill-red-500' 
+                : 'text-gray-600 hover:text-red-400'
+            }`} 
+          />
         </button>
       </div>
       <div className="p-6">

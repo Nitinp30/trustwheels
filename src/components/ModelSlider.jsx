@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -126,7 +126,7 @@ const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
           : "0 2px 4px rgba(0,0,0,0.1)",
       outline: "none",
       position: "absolute",
-      top: "50%",
+      top: "18%",
       transform: "translate(-50%, -50%)",
       transition: "box-shadow 0.2s ease",
       zIndex: activeThumb === thumbIndex ? 3 : 2,
@@ -139,7 +139,6 @@ const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
     <div className="mb-6">
       <h4 className="text-sm font-semibold text-gray-900 mb-3">{filter}</h4>
 
-      {/* Top Pill Inputs */}
       <div className="flex justify-between items-center mb-6">
         <div className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium bg-white shadow-sm min-w-[60px] text-center">
           {modelRange[0]}
@@ -150,15 +149,12 @@ const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
         </div>
       </div>
 
-      {/* Custom Slider Container */}
       <div className="relative px-2" ref={sliderRef}>
-        {/* Track */}
         <div
           ref={trackRef}
           className="relative w-full h-2 bg-gray-200 rounded-lg cursor-pointer"
           style={{ top: "50%", transform: "translateY(-50%)" }}
         >
-          {/* Active Track */}
           <div
             className="absolute h-full bg-gray-800 rounded-lg"
             style={{
@@ -170,7 +166,6 @@ const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
           />
         </div>
 
-        {/* Thumbs */}
         {[0, 1].map((thumbIndex) => (
           <div
             key={thumbIndex}
@@ -190,7 +185,6 @@ const ModelSlider = ({ modelRange, setModelRange, MAX, MIN, filter }) => {
         ))}
       </div>
 
-      {/* Bottom Labels */}
       <div className="flex justify-between text-sm text-gray-500 mt-4 px-2">
         <span>{MIN}</span>
         <span>{MAX}</span>

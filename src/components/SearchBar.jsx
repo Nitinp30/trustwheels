@@ -8,11 +8,18 @@ const SearchBar = ({ searchZip, setSearchZip, handleSearch, error }) => (
       <input
         type="text"
         value={searchZip}
-        onChange={(e) => setSearchZip(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (/^\d{0,5}$/.test(value)) {
+            setSearchZip(value);
+          }
+        }}
         placeholder="Enter ZIP code"
+        maxLength={5}
         className="w-full pl-12 pr-4 py-4 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
         onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
       />
+
       <button
         onClick={handleSearch}
         className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
