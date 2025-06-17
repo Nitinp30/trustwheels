@@ -24,7 +24,7 @@ const Home = () => {
   const [featuredFilter, setFeaturedFilter] = useState(false);
   const [modelYearRange, setModelYearRange] = useState([2020, 2025]);
   const [modelMileageRange, setModelMileageRange] = useState([0, 80000]);
-  const [isModelOverlayVisible, setIsModelOverlayVisible] =  useState(true)
+  const [isModelOverlayVisible, setIsModelOverlayVisible] = useState(true);
   const makes = [...new Set(MOCK_VEHICLES.map((v) => v.make))].sort();
   const colors = [...new Set(MOCK_VEHICLES.map((v) => v.color))].sort();
 
@@ -132,7 +132,9 @@ const Home = () => {
           </div>
         </div>
       )}
-      {currentZip && isModelOverlayVisible && <ModalOverlay setIsModelOverlayVisible={setIsModelOverlayVisible}/>}
+      {currentZip && isModelOverlayVisible && (
+        <ModalOverlay setIsModelOverlayVisible={setIsModelOverlayVisible} />
+      )}
     </div>
   );
 };

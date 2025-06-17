@@ -1,18 +1,23 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
 export const useVehicleFilters = (vehicles, filters) => {
   return useMemo(() => {
     let filteredVehicles = vehicles;
 
-    // Apply filters
     if (filters.currentZip) {
-      filteredVehicles = filteredVehicles.filter((v) => v.zipCode === filters.currentZip);
+      filteredVehicles = filteredVehicles.filter(
+        (v) => v.zipCode === filters.currentZip
+      );
     }
     if (filters.selectedMake) {
-      filteredVehicles = filteredVehicles.filter((v) => v.make === filters.selectedMake);
+      filteredVehicles = filteredVehicles.filter(
+        (v) => v.make === filters.selectedMake
+      );
     }
     if (filters.selectedColor) {
-      filteredVehicles = filteredVehicles.filter((v) => v.color === filters.selectedColor);
+      filteredVehicles = filteredVehicles.filter(
+        (v) => v.color === filters.selectedColor
+      );
     }
     if (filters.featuredFilter) {
       filteredVehicles = filteredVehicles.filter((v) => v.featured);
@@ -27,18 +32,21 @@ export const useVehicleFilters = (vehicles, filters) => {
       filteredVehicles = filteredVehicles.filter((v) => v.noShippingFee);
     }
 
-    // Apply range filters
     filteredVehicles = filteredVehicles.filter(
-      (v) => v.price >= filters.priceRange[0] && v.price <= filters.priceRange[1]
+      (v) =>
+        v.price >= filters.priceRange[0] && v.price <= filters.priceRange[1]
     );
     filteredVehicles = filteredVehicles.filter(
-      (v) => v.mileage >= filters.modelMileageRange[0] && v.mileage <= filters.modelMileageRange[1]
+      (v) =>
+        v.mileage >= filters.modelMileageRange[0] &&
+        v.mileage <= filters.modelMileageRange[1]
     );
     filteredVehicles = filteredVehicles.filter(
-      (v) => v.year >= filters.modelYearRange[0] && v.year <= filters.modelYearRange[1]
+      (v) =>
+        v.year >= filters.modelYearRange[0] &&
+        v.year <= filters.modelYearRange[1]
     );
 
-    // Apply sorting
     if (filters.sortBy && filters.sortBy !== "Popularity") {
       filteredVehicles = [...filteredVehicles].sort((a, b) => {
         switch (filters.sortBy) {
